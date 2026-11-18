@@ -1,0 +1,8 @@
+{
+  "thresholds": {
+    "warn": 0.03,
+    "verify": 0.05,
+    "hold": 0.15
+  },
+  "tuned_on": "validation period, minimising total cost"
+}

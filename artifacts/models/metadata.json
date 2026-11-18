@@ -1,0 +1,59 @@
+{
+  "seed": 42,
+  "split": {
+    "train_end": "2025-08-01",
+    "val_end": "2025-10-01"
+  },
+  "data": {
+    "n_customers": 2500,
+    "warmup_start": "2024-10-01",
+    "start": "2025-01-01",
+    "end": "2026-01-01",
+    "monthly_txn_rate_mean": 1.0,
+    "scam_episode_rate": 0.011,
+    "journey_signal_strength": 1.0,
+    "currency": "AZN"
+  },
+  "note": "Trained on synthetic data only.",
+  "baseline_features": [
+    "log_amount",
+    "log_amount_to_avg",
+    "amount_to_max",
+    "is_new_beneficiary",
+    "has_history",
+    "log_prior_txn_count",
+    "txn_last_24h",
+    "txn_last_7d",
+    "log_amount_last_24h",
+    "log_hours_since_last",
+    "is_night",
+    "log_n_distinct_beneficiaries",
+    "log_tenure_days"
+  ],
+  "enhanced_features": [
+    "baseline_logit",
+    "session_duration_s",
+    "time_to_payment_s",
+    "n_payment_screen_visits",
+    "n_amount_edits",
+    "n_payee_edits",
+    "n_back_navigations",
+    "n_app_switches",
+    "background_time_s",
+    "background_share",
+    "confirm_time_s",
+    "n_browse_events",
+    "payee_pasted",
+    "call_active"
+  ],
+  "calibration": {
+    "baseline_lr": {
+      "a": 0.8705969877458314,
+      "b": 0.0014507130138834683
+    },
+    "scamshield": {
+      "a": 0.8911859260353093,
+      "b": -0.004167184349717982
+    }
+  }
+}

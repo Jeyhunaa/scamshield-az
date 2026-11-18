@@ -13,9 +13,6 @@ data/raw/*
 data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
-artifacts/models/*
-!artifacts/models/.gitkeep
-artifacts/predictions_test.parquet
 
 # Customer app (web/dist is kept so the demo runs without Node.js)
 web/node_modules/

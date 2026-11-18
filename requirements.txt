@@ -1,0 +1,21 @@
+# Streamlit Community Cloud uses this file (it takes priority over pyproject.toml).
+# scikit-learn and catboost are pinned because the saved models in artifacts/
+# must be loaded with the same versions they were trained with.
+scikit-learn==1.9.1
+catboost==1.2.10
+numpy>=1.26
+pandas>=2.1
+pyarrow>=14
+joblib>=1.3
+pyyaml>=6.0
+matplotlib>=3.8
+altair>=5
+fastapi>=0.110
+uvicorn>=0.27
+pydantic>=2.5
+requests>=2.31
+streamlit>=1.50
+
+# Installs this project's own package (src/scamshield) in editable mode,
+# so it still finds configs/ and artifacts/ inside the repository.
+-e .
