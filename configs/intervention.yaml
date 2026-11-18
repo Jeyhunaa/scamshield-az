@@ -1,0 +1,41 @@
+# Cost-aware intervention assumptions (all monetary values in AZN).
+# These are ILLUSTRATIVE ASSUMPTIONS for the MVP — they must be replaced with values
+# estimated from real intervention outcomes (A/B tests, complaint and attrition data).
+#
+# Expected cost of action a:  EC(a) = p * L * (1 - e_a) + C_a + (1 - p) * F_a
+#   p   calibrated scam probability
+#   L   estimated loss if the scam succeeds = amount * loss_given_scam
+#   e_a probability the intervention stops a scam (effectiveness)
+#   C_a operational cost (e.g., analyst time, SMS/OTP, call-centre)
+#   F_a friction cost imposed on a legitimate customer (abandonment, complaints, attrition risk)
+
+loss_given_scam: 1.0     # fraction of the transfer lost if the scam succeeds (no recovery assumed)
+
+actions:
+  allow:
+    effectiveness: 0.0
+    operational_cost: 0.0
+    friction_cost: 0.0
+  warn:
+    effectiveness: 0.15
+    operational_cost: 0.05
+    friction_cost: 1.00      # includes warning fatigue: frequent warnings lose effect
+  verify:
+    effectiveness: 0.45
+    operational_cost: 2.00
+    friction_cost: 6.00
+  hold:
+    effectiveness: 0.85
+    operational_cost: 20.00  # analyst review / call-back
+    friction_cost: 60.00     # delayed legitimate payment: complaints, attrition risk
+
+guardrails:
+  min_amount_verify: 50.0          # below this, step-up verification is not offered
+  min_amount_hold: 200.0           # below this, a temporary hold is not permitted
+  high_risk_floor: 0.50            # if p >= this, "allow" is not permitted (always intervene)
+  max_amount_without_warning: 20000.0  # transfers above this always get at least a warning
+
+# Grid of probability thresholds searched on the VALIDATION set to tune the
+# baseline's fixed thresholds (warn < verify < hold). Giving the baseline its
+# best cost-tuned thresholds keeps the comparison fair.
+baseline_threshold_grid: [0.01, 0.02, 0.03, 0.05, 0.075, 0.10, 0.15, 0.20, 0.30, 0.40, 0.50, 0.65, 0.80, 0.95]

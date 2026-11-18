@@ -1,0 +1,299 @@
+# Demo scenarios for the dashboard and API examples.
+# Only INPUTS are defined here. Risk scores and actions are always computed live by the
+# trained models and the decision engine — nothing about the outcome is hard-coded.
+#
+# intended_action: the outcome the scenario is DESIGNED to illustrate. It is never used to
+#   make a decision; tests/test_models.py checks that the live models actually produce it.
+# customer_view: cosmetic details for the simulated mobile-banking screen (fictional people,
+#   fictional bank codes). They do not affect the models.
+# Journey events: [event_type, seconds since session start]
+
+routine_rent:
+  title: "Routine rent payment"
+  kind: legitimate
+  intended_action: allow
+  story: "Monthly rent to a saved landlord. Customer logs in, checks balance, pays in under a minute."
+  customer_view:
+    recipient: "Elchin Huseynov"
+    iban: "AZ21KRVN40060019440017235610"
+    recipient_bank: "Karvan"
+    purpose: "Rent — November"
+  transaction:
+    amount: 450.0
+    hour: 10
+    is_new_beneficiary: false
+    prior_txn_count: 38
+    prior_avg_amount: 310.0
+    prior_max_amount: 1200.0
+    txn_last_24h: 0
+    txn_last_7d: 1
+    amount_last_24h: 0.0
+    hours_since_last_txn: 96.0
+    n_distinct_beneficiaries: 7
+    tenure_days: 1460
+  journey_events:
+    - [login, 0]
+    - [home, 2.1]
+    - [browse, 7.5]
+    - [payments_menu, 10.2]
+    - [payee_select_saved, 12.8]
+    - [amount_entered, 18.9]
+    - [review_screen, 21.0]
+    - [confirm, 24.6]
+
+friend_new_payee:
+  title: "Paying back a friend (new beneficiary)"
+  kind: legitimate
+  intended_action: allow
+  story: "Small transfer to a friend; the card number is copied from a messenger chat."
+  customer_view:
+    recipient: "Leyla Aliyeva"
+    iban: "AZ64CSPN38810000000045912207"
+    recipient_bank: "Caspian Savings"
+    purpose: "Dinner last Friday"
+  transaction:
+    amount: 60.0
+    hour: 20
+    is_new_beneficiary: true
+    prior_txn_count: 22
+    prior_avg_amount: 95.0
+    prior_max_amount: 600.0
+    txn_last_24h: 0
+    txn_last_7d: 2
+    amount_last_24h: 0.0
+    hours_since_last_txn: 30.0
+    n_distinct_beneficiaries: 9
+    tenure_days: 820
+  journey_events:
+    - [login, 0]
+    - [home, 1.8]
+    - [payments_menu, 4.6]
+    - [payee_new_form, 6.4]
+    - [app_background, 8.0]
+    - [app_foreground, 19.5]
+    - [payee_pasted, 23.9]
+    - [amount_entered, 29.8]
+    - [review_screen, 32.0]
+    - [confirm, 35.7]
+
+marketplace_seller:
+  title: "Online marketplace purchase (fake seller)"
+  kind: scam
+  intended_action: warn
+  story: "Customer buys a used phone from a marketplace listing. The 'seller' insists on a bank transfer instead of the platform's safe checkout and sends the IBAN in the chat. The customer copies it from the marketplace app and pays quickly — calm, but a classic purchase-scam pattern."
+  customer_view:
+    recipient: "Tural Mammadli"
+    iban: "AZ09ABSH00460010099874412305"
+    recipient_bank: "Absheron Credit"
+    purpose: "iPhone 13 — marketplace order"
+  transaction:
+    amount: 300.0
+    hour: 19
+    is_new_beneficiary: true
+    prior_txn_count: 27
+    prior_avg_amount: 120.0
+    prior_max_amount: 700.0
+    txn_last_24h: 0
+    txn_last_7d: 1
+    amount_last_24h: 0.0
+    hours_since_last_txn: 40.0
+    n_distinct_beneficiaries: 10
+    tenure_days: 1300
+  journey_events:
+    - [login, 0]
+    - [home, 1.9]
+    - [payments_menu, 4.8]
+    - [payee_new_form, 6.7]
+    - [app_background, 8.5]
+    - [app_foreground, 31.0]
+    - [payee_pasted, 34.2]
+    - [amount_entered, 40.1]
+    - [review_screen, 42.6]
+    - [confirm, 48.9]
+
+new_landlord_deposit:
+  title: "Deposit to a new landlord"
+  kind: legitimate
+  intended_action: verify
+  story: "Customer is moving flats and pays a 1,200 AZN deposit to a landlord for the first time. They type the IBAN from the signed rental contract — calm and deliberate, but a large first payment to a new recipient."
+  customer_view:
+    recipient: "Nigar Rzayeva"
+    iban: "AZ48GNJA40060011122233344455"
+    recipient_bank: "Ganja Mutual"
+    purpose: "Security deposit — Nasimi flat"
+  transaction:
+    amount: 1200.0
+    hour: 18
+    is_new_beneficiary: true
+    prior_txn_count: 35
+    prior_avg_amount: 260.0
+    prior_max_amount: 900.0
+    txn_last_24h: 0
+    txn_last_7d: 1
+    amount_last_24h: 0.0
+    hours_since_last_txn: 60.0
+    n_distinct_beneficiaries: 9
+    tenure_days: 1700
+  journey_events:
+    - [login, 0]
+    - [home, 2.2]
+    - [browse, 7.9]
+    - [payments_menu, 11.0]
+    - [payee_new_form, 13.1]
+    - [payee_typed, 41.0]
+    - [amount_entered, 47.5]
+    - [review_screen, 50.2]
+    - [confirm, 57.0]
+
+relative_emergency:
+  title: "'Hi Mum' family emergency scam"
+  kind: scam
+  intended_action: verify
+  story: "A message from an unknown number claims to be the customer's son: new phone, urgent bill, please pay this account. The customer switches back and forth to the messenger to copy the IBAN and re-read the messages before confirming."
+  customer_view:
+    recipient: "Kamran Ismayilov"
+    iban: "AZ73SLKR33090000000017640988"
+    recipient_bank: "Silk Road Credit"
+    purpose: "For Murad — urgent"
+  transaction:
+    amount: 300.0
+    hour: 21
+    is_new_beneficiary: true
+    prior_txn_count: 48
+    prior_avg_amount: 150.0
+    prior_max_amount: 800.0
+    txn_last_24h: 0
+    txn_last_7d: 2
+    amount_last_24h: 0.0
+    hours_since_last_txn: 26.0
+    n_distinct_beneficiaries: 12
+    tenure_days: 2600
+  journey_events:
+    - [login, 0]
+    - [home, 2.5]
+    - [payments_menu, 5.0]
+    - [payee_new_form, 7.4]
+    - [app_background, 9.0]
+    - [app_foreground, 48.0]
+    - [payee_pasted, 52.0]
+    - [amount_entered, 58.0]
+    - [app_background, 61.0]
+    - [app_foreground, 95.0]
+    - [review_screen, 99.0]
+    - [confirm, 112.0]
+
+car_deposit:
+  title: "Car purchase deposit (large, legitimate)"
+  kind: legitimate
+  intended_action: hold
+  story: "Unusually large first payment to a car dealer. Customer types the IBAN from an invoice, double-checks calmly, no call, no app switching."
+  customer_view:
+    recipient: "Baku Auto Center LLC"
+    iban: "AZ35KRVN40060019440088120034"
+    recipient_bank: "Karvan"
+    purpose: "Deposit — Toyota Corolla, invoice #4471"
+  transaction:
+    amount: 6000.0
+    hour: 15
+    is_new_beneficiary: true
+    prior_txn_count: 41
+    prior_avg_amount: 280.0
+    prior_max_amount: 1500.0
+    txn_last_24h: 0
+    txn_last_7d: 1
+    amount_last_24h: 0.0
+    hours_since_last_txn: 52.0
+    n_distinct_beneficiaries: 11
+    tenure_days: 2100
+  journey_events:
+    - [login, 0]
+    - [home, 2.3]
+    - [browse, 9.1]
+    - [browse, 15.0]
+    - [payments_menu, 18.2]
+    - [payee_new_form, 20.5]
+    - [payee_typed, 49.0]
+    - [amount_entered, 57.4]
+    - [review_screen, 60.1]
+    - [confirm, 67.8]
+
+safe_account_scam:
+  title: "Safe-account impersonation scam"
+  kind: scam
+  intended_action: hold
+  story: "A caller posing as the bank's security team keeps the customer on the phone and dictates a 'safe account'. The customer switches apps to read the IBAN sent by SMS, edits the amount twice, goes back and hesitates on the confirmation screen."
+  customer_view:
+    recipient: "Security Reserve Account"
+    iban: "AZ92NOVA00440000000035017721"
+    recipient_bank: "Nova Trust"
+    purpose: "Protective transfer — case 7731"
+  transaction:
+    amount: 3500.0
+    hour: 11
+    is_new_beneficiary: true
+    prior_txn_count: 30
+    prior_avg_amount: 240.0
+    prior_max_amount: 1100.0
+    txn_last_24h: 0
+    txn_last_7d: 0
+    amount_last_24h: 0.0
+    hours_since_last_txn: 150.0
+    n_distinct_beneficiaries: 6
+    tenure_days: 3100
+  journey_events:
+    - [login, 0]
+    - [call_active, 0.5]
+    - [home, 3.0]
+    - [payments_menu, 6.1]
+    - [payee_new_form, 9.4]
+    - [app_background, 12.0]
+    - [app_foreground, 71.0]
+    - [payee_pasted, 78.3]
+    - [amount_entered, 88.0]
+    - [amount_edit, 97.5]
+    - [app_background, 101.0]
+    - [app_foreground, 152.0]
+    - [amount_edit, 160.4]
+    - [back_navigation, 166.0]
+    - [payments_menu, 169.3]
+    - [review_screen, 174.0]
+    - [confirm, 205.0]
+
+investment_repeat:
+  title: "Investment scam - repeat payment"
+  kind: scam
+  intended_action: hold
+  story: "Third 'top-up' to a fake crypto platform the customer has paid before (known beneficiary). In the evening, the customer flips between the banking app and the platform's chat while a 'manager' guides them."
+  customer_view:
+    recipient: "Orion Capital Trade"
+    iban: "AZ58DCMB00230000000061445019"
+    recipient_bank: "Shirvan Commercial"
+    purpose: "Trading account top-up"
+  transaction:
+    amount: 900.0
+    hour: 22
+    is_new_beneficiary: false
+    prior_txn_count: 25
+    prior_avg_amount: 210.0
+    prior_max_amount: 560.0
+    txn_last_24h: 0
+    txn_last_7d: 1
+    amount_last_24h: 0.0
+    hours_since_last_txn: 70.0
+    n_distinct_beneficiaries: 8
+    tenure_days: 640
+  journey_events:
+    - [login, 0]
+    - [home, 1.6]
+    - [payments_menu, 3.9]
+    - [payee_select_saved, 6.2]
+    - [amount_entered, 11.0]
+    - [app_background, 13.5]
+    - [app_foreground, 58.0]
+    - [amount_edit, 63.2]
+    - [app_background, 66.0]
+    - [app_foreground, 104.0]
+    - [back_navigation, 108.0]
+    - [payments_menu, 110.5]
+    - [review_screen, 114.0]
+    - [confirm, 131.0]

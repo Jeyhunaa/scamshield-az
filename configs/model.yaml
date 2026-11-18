@@ -1,0 +1,39 @@
+# ScamShield AZ — data generation, split and model configuration.
+# Every value here is a SIMULATION ASSUMPTION, not a calibrated banking statistic.
+
+seed: 42
+
+data:
+  n_customers: 2500
+  warmup_start: "2024-10-01"     # history-only period: used for customer history features, never modeled
+  start: "2025-01-01"            # first modeled transaction
+  end: "2026-01-01"              # exclusive
+  monthly_txn_rate_mean: 1.0     # mean transfers per customer per month (gamma-distributed across customers)
+  scam_episode_rate: 0.011       # base monthly hazard of a customer entering a scam episode (before vulnerability)
+  journey_signal_strength: 1.0   # 1.0 = default; 0 = scam journeys indistinguishable from legit journeys
+  currency: "AZN"
+
+split:                           # chronological, by transaction timestamp
+  train_end: "2025-08-01"        # train: [start, train_end)
+  val_end: "2025-10-01"          # validation: [train_end, val_end)  -> calibration + threshold tuning
+                                 # test: [val_end, end)               -> final evaluation only
+
+baseline:
+  C: 0.5
+  max_iter: 2000
+  oof_folds: 5                   # out-of-fold baseline scores feed the enhanced model
+
+enhanced:
+  iterations: 600
+  learning_rate: 0.04
+  depth: 4
+  l2_leaf_reg: 6.0
+  random_strength: 1.0
+
+evaluation:
+  fpr_levels: [0.01, 0.02, 0.05]
+  bootstrap_reps: 300
+  sensitivity:
+    signal_strengths: [1.0, 0.6, 0.3, 0.0]
+    prevalence_multipliers: [0.5, 1.0, 2.0, 4.0]
+    effectiveness_multipliers: [0.5, 0.75, 1.0, 1.15]
